@@ -1,9 +1,10 @@
-## Nix overlays to support Fly.io deployments
+## Nix derivations and tools for Fly.io deployments
 
-Here we'll keep overlays for package versions we'd like to make available in the Fly binary cache at flyio.cachix.org.
-Eventually, this repo should run CI to build and push these packages to Cachix against the current Fly nix version.
-Fly users who stick with our official Nix versions will be able to use this cache to speed up deployments.
+This repo serves as the single point of truth for Nix deployments on Fly.io.
 
-Stuff we'd like to have:
+Some things we want to do here:
 
-* Ruby patch versions from 2.5 and up
+* Store Nix code extracted from our [Rails Nix](https://github.com/fly-apps/rails-nix) experiment, to be referenced by builds
+* Curate and build patch releases for Ruby back to v2.7.0, with jemalloc and YJIT enabled where possible
+* Cache builds on Cachix or possibly an internal cache store
+* Run CI to automate builds and build caching
