@@ -1,4 +1,4 @@
-{ lib, closureInfo, dockerTools }:
+{ lib, writeText, closureInfo, dockerTools }:
 
 let
   inherit (lib)
@@ -24,17 +24,22 @@ in
         # The result will not be copied in the Nix store, meaning access rights
         # and other properties stripped by the Nix store are kept.
         , extraCommands ? ""
+        , config ? {}
         # Any extra given to `buildLayeredImage`.
         , ...
         }@layerConfig:
         let
           # Increases the layer count.
           maxLayers = prev.maxLayers + 1;
+          # Used to get the closure of the config (e.g. Config.Cmd or Config.Env)
+          configJSON = writeText "layer-config.json" (
+            builtins.toJSON config
+          );
           layer = {
             layerNumber = prev.layerNumber + 1;
             inherit maxLayers;
             contents = prev.contents ++ contents;
-            currentStorePaths = "${closureInfo { rootPaths = contents; }}/store-paths";
+            currentStorePaths = "${closureInfo { rootPaths = contents ++ [ configJSON ]; }}/store-paths";
             previousStorePaths = "${closureInfo { rootPaths = prev.contents; }}/store-paths";
 
             image = dockerTools.buildLayeredImage (layerConfig // {
@@ -55,10 +60,18 @@ in
                   #   - previousStorePaths = [ a b c e ]
                   # This returns [ d f ]
                   # `uniq -u` keeps only unique path entries, and we're duplicating unwanted inputs.
-                  sort \
-                    "${layer.currentStorePaths}" \
-                    "${layer.previousStorePaths}" \
-                    "${layer.previousStorePaths}" \
+                  #
+                  # Skip configJSON, which is used only for its transitive dependencies.
+                  (
+                    cat "${layer.currentStorePaths}" \
+                      "${layer.previousStorePaths}" \
+                      "${layer.previousStorePaths}"
+
+                    # Skip inclusion of the config file.
+                    echo ${configJSON}
+                    echo ${configJSON}
+                  ) \
+                    | sort \
                     | uniq -u
                 }
 
