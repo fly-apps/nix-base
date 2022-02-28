@@ -10,4 +10,9 @@ in
   defaultGemConfig = callPackage ./pkgs/ruby/gem-config.nix {
     defaultGemConfig = super.defaultGemConfig;
   };
+
+  fly = final.lib.makeScope final.newScope (self: {
+    # Image tools and helpers
+    imageTools = callPackage ./support/image-tools.nix { };
+  });
 }
