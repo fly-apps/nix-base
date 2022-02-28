@@ -42,7 +42,7 @@ in
             currentStorePaths = "${closureInfo { rootPaths = contents ++ [ configJSON ]; }}/store-paths";
             previousStorePaths = "${closureInfo { rootPaths = prev.contents; }}/store-paths";
 
-            image = dockerTools.buildLayeredImage (layerConfig // {
+            image = (dockerTools.buildLayeredImage (layerConfig // {
               inherit name;
               # Layer on top of the previous step.
               fromImage = prev.image;
@@ -85,12 +85,21 @@ in
 
                 ${extraCommands}
               '';
+            })).overrideAttrs({ passthru ? {}, ... }: {
+              passthru = passthru // {
+                inherit layer;
+              };
             });
           };
         in
         layer
       )
-      { contents = []; layerNumber = 0; maxLayers = 1; image = fromImage; }
+      (
+        # Can we continue from the exposed `layer` in `fromImage`?
+        if fromImage ? layer && fromImage.layer ? layerNumber
+        then fromImage.layer
+        else { contents = []; layerNumber = 0; maxLayers = 1; image = fromImage; }
+      )
       layeredContent
     )
     # Export the build artifact (image) from the last step.
