@@ -4,6 +4,7 @@
 
 {
   imports = [
+    ./container.nix
     ./helpers.nix
     ./nixpkgs.nix
   ];
