@@ -12,6 +12,8 @@ in
   };
 
   fly = final.lib.makeScope final.newScope (self: {
+    evalSpec = callPackage ./support/eval-spec.nix { };
+
     # Image tools and helpers
     baseLayer = callPackage ./support/base-layer.nix { };
     imageTools = callPackage ./support/image-tools.nix { };
