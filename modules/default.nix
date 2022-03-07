@@ -4,6 +4,7 @@
 
 {
   imports = [
+    ./app.nix
     ./container.nix
     ./helpers.nix
     ./nixpkgs.nix
