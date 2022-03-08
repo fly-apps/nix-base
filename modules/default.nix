@@ -8,5 +8,6 @@
     ./container.nix
     ./helpers.nix
     ./nixpkgs.nix
+    ./templates
   ];
 }
