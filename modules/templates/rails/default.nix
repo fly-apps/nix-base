@@ -14,6 +14,14 @@ in
   options = {
     templates.rails = {
       enable = mkEnableOption "the Rails template";
+      assetInputs = mkOption {
+        type = with types; listOf str;
+        description = ''
+          Project-relative paths to be included in the assets pre-compilation step.
+
+          Default includes the minimum needed for a basic Rails app.
+        '';
+      };
       gemInputs = mkOption {
         type = with types; listOf str;
         # NOTE: if needed for e.g. local gems, add an additional option that
@@ -25,15 +33,66 @@ in
           Default includes the minimum assumed required.
         '';
       };
+      outputs = {
+        assets = mkOption {
+          type = types.package;
+          internal = true;
+          description = ''
+            Pre-compiled assets.
+          '';
+        };
+      };
     };
   };
 
   config = mkIf (config.templates.rails.enable) {
+    templates.rails.assetInputs = [
+      "app/assets"
+      "app/javascript"
+      "vendor/javascript"
+
+      # The following components are required for things to work correctly.
+      "bin/rails"
+      "config"
+      "lib"
+      "Rakefile"
+      "config.ru"
+    ] ++ config.templates.rails.gemInputs;
+
     templates.rails.gemInputs = [
       "Gemfile"
       "Gemfile.lock"
       "gemset.nix"
     ];
+
+    # The assets output is a specialization of the main project build.
+    templates.rails.outputs.assets = (app.override {
+      # The source path is reduced to include only files relevant to the
+      # assets pre-compilation
+      source = pkgs.fly.keepPaths {
+        root = config.app.source;
+        paths = config.templates.rails.assetInputs;
+      };
+    }).overrideAttrs({ installPhase ? "", ... }: {
+      # The installPhase is modified to only output the assets build.
+      installPhase = ''
+        ${installPhase}
+
+        # The main build copied the source to the out path.
+        # Clean it up
+        rm -rf $out
+
+        # Needs to be created beforehand
+        # NOTE: To start from a cached build, copy it here
+        mkdir -p public/assets
+
+        # Build the assets
+        bundle exec rails assets:precompile
+
+        mkdir -p $out/public
+        cp -prf public/assets $out/public/assets
+      '';
+    });
 
     outputs = {
       app = pkgs.callPackage (
@@ -127,6 +186,9 @@ in
       # Runtime
       { contents = [ app.ruby ]; }
       { contents = [ app.wrappedRuby ]; }
+
+      # Pre-built assets
+      { contents = [ config.templates.rails.outputs.assets ]; }
 
       # The app itself
       {
