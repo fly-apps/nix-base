@@ -16,7 +16,6 @@ jobs:
     - uses: cachix/cachix-action@v10
       with:
         name: flyio
-        signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
+        authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
     - run: nix-build -A ruby_2_7_4
-    - run: nix-shell --run "echo OK"
 
