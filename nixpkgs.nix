@@ -7,9 +7,9 @@
 # Using this simple purely-Nix shim serves as a placeholder.
 
 let
-  # Tracking https://github.com/NixOS/nixpkgs/tree/master
-  rev = "d44916d12f1d39baa02325040b381311364ad93a";
-  sha256 = "sha256:1rbbxyl09z9wf0dzvc55sk52ia6px6g7hfcsh8w1wgqf85smx6lk";
+  # Tracking https://github.com/NixOS/nixpkgs/tree/nixos-21.11
+  rev = "062a0c5437b68f950b081bbfc8a699d57a4ee026"; # nixos-unstable
+  sha256 = "sha256:6575f6d59578d34ebc7dd9a3959018fe116817effab49a6caadc2fea6d98bfd5";
   tarball = builtins.fetchTarball {
     url = "https://github.com/NixOS/nixpkgs/archive/${rev}.tar.gz";
     inherit sha256;
