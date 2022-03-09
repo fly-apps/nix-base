@@ -9,7 +9,7 @@
 let
   # Tracking https://github.com/NixOS/nixpkgs/tree/master
   rev = "d44916d12f1d39baa02325040b381311364ad93a";
-  sha256 = "sha256:1rqvacv514j52wxq1cy7b86dmyacs3hgx4rw6agjdba73ajrjshw";
+  sha256 = "sha256:1rbbxyl09z9wf0dzvc55sk52ia6px6g7hfcsh8w1wgqf85smx6lk";
   tarball = builtins.fetchTarball {
     url = "https://github.com/NixOS/nixpkgs/archive/${rev}.tar.gz";
     inherit sha256;
