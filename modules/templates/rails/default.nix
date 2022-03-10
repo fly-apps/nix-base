@@ -173,6 +173,7 @@ in
 
       ) {
         inherit (config.app) source ;
+        ruby = config.runtimes.ruby.package;
       };
 
       shell = config.outputs.app.override {
