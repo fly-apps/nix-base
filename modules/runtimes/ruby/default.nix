@@ -42,13 +42,24 @@ in
           '';
           internal = true;
         };
+        withJemalloc = mkOption {
+          default = false;
+          type = types.bool;
+          description = ''
+            Whether jemalloc is enabled or not for Ruby.
+          '';
+        };
       };
     };
   };
 
   config = {
     runtimes.ruby = {
-      package = mkDefault (rubyInterpreters."${config.runtimes.ruby.version}");
+      package = mkDefault (
+        (rubyInterpreters."${config.runtimes.ruby.version}").override({
+          jemallocSupport = config.runtimes.ruby.withJemalloc;
+        })
+      );
       rubyInterpreters = mkMerge [
         # Ruby packages maintained in the Fly overlay
         {
