@@ -54,6 +54,7 @@ in
         {
           "2.7.4" = pkgs.ruby_2_7_4;
           "2.7.5" = pkgs.ruby_2_7_5;
+          "3.1.1" = pkgs.ruby_3_1_1;
         }
         # Force the default `ruby` packages from Nixpkgs in the attrset.
         # It is important for the default `pkgs.ruby.version.majMinTiny` usage
