@@ -7,6 +7,7 @@
     ./app.nix
     ./container.nix
     ./helpers.nix
+    ./runtimes
     ./templates
   ];
 }
