@@ -2,7 +2,7 @@
 , lib
 }:
 
-# Interface used in projects:
+# Interface used in project default.nix
 { config ? {} }:
 
 let

@@ -9,7 +9,8 @@ in
   buildSpecifiedLayers =
     { layeredContent
     # An image to start building from. Note that store path deduplication will
-    # not be attempted when starting from an existing image.
+    # not be attempted when starting from an existing Docker image. Store deduplication
+    # will happen if using a previous evaluation of buildSpecifiedLayers.
     , fromImage ? null
     }:
     (
