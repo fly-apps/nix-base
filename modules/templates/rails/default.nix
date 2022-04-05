@@ -62,7 +62,7 @@ in
     templates.rails.gemInputs = [
       "Gemfile"
       "Gemfile.lock"
-      "gemset.nix"
+      ".fly/gemset.nix"
     ];
 
     # The assets output is a specialization of the main project build.
@@ -118,7 +118,7 @@ in
               allGroups = lib.unique (builtins.concatLists (
                 lib.mapAttrsToList
                 (k: v: v.groups)
-                (import (source + "/gemset.nix"))
+                (import (source + "/.fly/gemset.nix"))
               ));
 
               # [ "default" "development" "test" ] - [ "default ] ⇒ [ "development" "test" ]
@@ -142,6 +142,7 @@ in
 
           gems = bundlerEnv {
             name = "rails-nix-gems";
+            gemset = source + "/.fly/gemset.nix";
             inherit ruby groups gemfile;
             # Keep only files relevant to gems
             gemdir = pkgs.fly.keepPaths {
