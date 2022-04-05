@@ -62,7 +62,7 @@ in
     templates.rails.gemInputs = [
       "Gemfile"
       "Gemfile.lock"
-      ".fly/gemset.nix"
+      ".nix/gemset.nix"
     ];
 
     # The assets output is a specialization of the main project build.
