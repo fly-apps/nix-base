@@ -1,0 +1,7 @@
+#!/bin/sh
+
+GIT_SHA=$(gh api https://api.github.com/repos/nixos/nixpkgs/commits -q '.[0].sha')
+NIX_SHA=$(nix-shell -p nix-universal-prefetch --command "nix-universal-prefetch builtins.fetchTarball --url https://github.com/nixos/nixpkgs/archive/${GIT_SHA}.tar.gz")
+
+echo "rev = \"$GIT_SHA\";"
+echo "sha256 = \"$NIX_SHA\";"

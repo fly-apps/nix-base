@@ -8,8 +8,8 @@
 
 let
   # Tracking https://github.com/NixOS/nixpkgs/tree/nixos-unstable
-  rev = "062a0c5437b68f950b081bbfc8a699d57a4ee026";
-  sha256 = "sha256:0vfd7g1gwy9lcnnv8kclqr68pndd9sg0xq69h465zbbzb2vnijh9";
+  rev = "0c7c76fa9e2f5c7b446c1182c79eabac08588392";
+  sha256 = "sha256:0n0j1zg237pfjr1xg2cpg8fwj0fg93knwrxxjv7xwqdks7jy89yf";
   tarball = builtins.fetchTarball {
     url = "https://github.com/NixOS/nixpkgs/archive/${rev}.tar.gz";
     inherit sha256;
