@@ -118,7 +118,7 @@ in
               allGroups = lib.unique (builtins.concatLists (
                 lib.mapAttrsToList
                 (k: v: v.groups)
-                (import (source + "/.fly/gemset.nix"))
+                (import (source + "/.nix/gemset.nix"))
               ));
 
               # [ "default" "development" "test" ] - [ "default ] ⇒ [ "development" "test" ]
@@ -142,7 +142,7 @@ in
 
           gems = bundlerEnv {
             name = "rails-nix-gems";
-            gemset = source + "/.fly/gemset.nix";
+            gemset = source + "/.nix/gemset.nix";
             inherit ruby groups gemfile;
             # Keep only files relevant to gems
             gemdir = pkgs.fly.keepPaths {
