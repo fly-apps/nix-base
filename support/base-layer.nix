@@ -1,5 +1,5 @@
 { fly
-, busybox
+, bash
 , cacert
 }:
 
@@ -13,6 +13,6 @@
  */
 fly.imageTools.buildSpecifiedLayers {
   layeredContent = [
-    { contents = [ busybox cacert ]; }
+    { contents = [ bash cacert ]; }
   ];
 }
