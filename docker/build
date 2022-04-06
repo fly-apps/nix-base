@@ -1,0 +1,29 @@
+#!/usr/bin/env nix-shell
+#!nix-shell -I .nix/default.nix -p flyctl skopeo dive yq jq git -i bash
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+export FLY_API_TOKEN=$(flyctl auth token)
+export PROJECT_NAME="$(tomlq --raw-output .app fly.toml)"
+export TAG="registry.fly.io/${PROJECT_NAME}:nix-$(date +%s)"
+
+if [ -n "${DOCKER}" ] || [ $(uname -p) == "arm" ]; then
+  echo "Running linux-amd64 build in Docker..."
+  docker run --privileged --platform linux/amd64 -e FLY_API_TOKEN=$FLY_API_TOKEN -v nixdir:/nix -v $PWD:/app --workdir=/app --rm nixos/nix /app/.nix/build
+else
+    echo "Building ${PROJECT_NAME}..."
+
+    COMMAND="nix-build .nix -A eval.config.outputs.container.image"
+
+    if [ -n "$NIX_BASE_DEV" ]; then
+        COMMAND="${COMMAND} --arg nix-base '(import ../../internal/nix-base {})'"
+    fi
+
+    echo $COMMAND
+    export ARCHIVE_PATH=$($COMMAND)
+    echo "Image tarball: $ARCHIVE_PATH"
+
+    $(dirname "$0")/push $ARCHIVE_PATH
+fi

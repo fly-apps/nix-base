@@ -1,0 +1,3 @@
+#!/bin/sh
+
+nix-shell --run "ruby -v && bundix -l --gemset .nix/gemset.nix" .nix/ruby_shell.nix

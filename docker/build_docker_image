@@ -1,0 +1,5 @@
+#!/bin/sh
+
+TAG=${TAG:-"latest"}
+docker build --platform linux/amd64 -t flyio/nix-build:$TAG .
+docker push flyio/nix-build:$TAG

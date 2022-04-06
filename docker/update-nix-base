@@ -1,0 +1,11 @@
+#!/usr/bin/env nix-shell
+#!nix-shell -p dasel nix-universal-prefetch -i bash
+
+GIT_SHA=$(gh api https://api.github.com/repos/fly-apps/nix-base/commits -q '.[0].sha')
+NIX_SHA=$(nix-universal-prefetch builtins.fetchTarball --url https://github.com/fly-apps/nix-base/archive/${GIT_SHA}.tar.gz)
+
+dasel put string -f fly.toml -s '.requirements.nix_base_revision' $GIT_SHA
+dasel put string -f fly.toml -s '.requirements.nix_base_sha256' $NIX_SHA
+
+echo "rev = \"$GIT_SHA\";"
+echo "sha256 = \"$NIX_SHA\";"
