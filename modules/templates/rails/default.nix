@@ -54,7 +54,7 @@ in
       # The following components are required for things to work correctly.
       "bin/rails"
       "config"
-      "lib"
+      "lib/tasks"
       "Rakefile"
       "config.ru"
     ] ++ config.templates.rails.gemInputs;
