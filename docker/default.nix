@@ -6,7 +6,7 @@ in
 (nix-base.fly.evalSpec) {
   config = { pkgs, ... }: {
     templates.rails.enable = true;
-    app.source = builtins.fetchGit ../.;
+    app.source = ../.;
     runtimes.ruby.version = toml.requirements.runtime.ruby_version or null;
     runtimes.ruby.withJemalloc = toml.requirements.runtime.use_jemalloc or false;
 
