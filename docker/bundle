@@ -1,3 +1,5 @@
 #!/bin/sh
 
+set -eu
+
 nix-shell --pure -p bundix -p cacert --run "bundix --gemset .nix/gemset.nix"

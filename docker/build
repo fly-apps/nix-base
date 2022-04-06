@@ -3,28 +3,16 @@
 
 set -e
 
-cd "$(dirname "$0")/.."
+echo "Building ${PROJECT_NAME}..."
 
-if [ -n "${DOCKER}" ] || [ $(uname -p) == "arm" ]; then
-  echo "Running linux-amd64 build in Docker..."
-  docker run --privileged --platform linux/amd64 -e FLY_API_TOKEN=$FLY_API_TOKEN -v nixdir:/nix -v $PWD:/app --workdir=/app --rm nixos/nix /app/.nix/build
-else
+COMMAND="nix-build .nix -A eval.config.outputs.container.image"
 
-    echo "Generating bundix gemset..."
-
-    $(dirname "$0")/bundle
-
-    echo "Building ${PROJECT_NAME}..."
-
-    COMMAND="nix-build .nix -A eval.config.outputs.container.image"
-
-    if [ -n "$NIX_BASE_DEV" ]; then
-        COMMAND="${COMMAND} --arg nix-base '(import ../../internal/nix-base {})'"
-    fi
-
-    echo $COMMAND
-    export ARCHIVE_PATH=$($COMMAND)
-    echo "Image tarball: $ARCHIVE_PATH"
-
-    $(dirname "$0")/push $ARCHIVE_PATH
+if [ -n "$NIX_BASE_DEV" ]; then
+    COMMAND="${COMMAND} --arg nix-base '(import ../../internal/nix-base {})'"
 fi
+
+echo $COMMAND
+export ARCHIVE_PATH=$($COMMAND)
+echo "Image tarball: $ARCHIVE_PATH"
+
+$(dirname "$0")/push $ARCHIVE_PATH

@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.4
-FROM alpine as base
+FROM alpine
 ENV USER root
 
 RUN apk add rsync curl ca-certificates xz bash
@@ -22,14 +22,7 @@ RUN mkdir /source
 WORKDIR /source
 
 RUN ls /nix
-RUN rsync -av /nix /nix-backup
-
+RUN cp -pr /nix /nix-backup
 COPY . /nix_support
 
 SHELL ["bash", "-l", "-c"]
-
-FROM base
-ARG FLY_API_TOKEN
-ONBUILD COPY . .
-ONBUILD RUN cp -pr /nix_support .nix
-ONBUILD RUN --mount=type=cache,id=nix-store,target=/nix,from=base,source=/nix .nix/build
