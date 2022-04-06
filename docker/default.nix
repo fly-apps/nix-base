@@ -1,7 +1,7 @@
 { nix-base ? (import ./nix-base.nix {})
 }:
 let
-  toml = (builtins.fromTOML (builtins.readFile ../fly.toml));
+  toml = (builtins.fromTOML (builtins.readFile ../nix.toml));
 in
 (nix-base.fly.evalSpec) {
   config = { pkgs, ... }: {
