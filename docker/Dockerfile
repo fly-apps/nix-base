@@ -26,3 +26,20 @@ RUN cp -pr /nix /nix-backup
 COPY . /nix_support
 
 SHELL ["bash", "-l", "-c"]
+
+# The following should run at build time on the client
+
+# Warm up the Nix cache
+ONBUILD RUN --mount=type=cache,id=nix-store,target=/nix cp -pr /nix-backup/* /nix
+
+ONBUILD COPY . .
+
+ONBUILD ARG FLY_API_TOKEN
+ONBUILD ARG TAG
+ONBUILD ENV FLY_API_TOKEN=${FLY_API_TOKEN}
+ONBUILD ENV TAG=${TAG}
+
+ONBUILD RUN cp -pr /nix_support .nix
+
+ONBUILD RUN --mount=type=cache,id=nix-store,target=/nix .nix/bundle
+ONBUILD RUN --mount=type=cache,id=nix-store,target=/nix .nix/build

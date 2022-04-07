@@ -10,8 +10,8 @@ in
   config = { pkgs, ... }: {
     templates.rails.enable = true;
     app.source = ../.;
-    runtimes.ruby.version = toml.requirements.runtime.ruby_version or "3.1.1";
-    runtimes.ruby.withJemalloc = toml.requirements.runtime.use_jemalloc or false;
+    runtimes.ruby.version = toml.runtime.ruby_version or "3.1.1";
+    runtimes.ruby.withJemalloc = toml.runtime.use_jemalloc or false;
 
     # Define additional paths required for asset compilation
     templates.rails.assetInputs = toml.build.asset_compilation_files or [""];
