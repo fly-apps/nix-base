@@ -1,13 +1,16 @@
 { nix-base ? (import ./nix-base.nix {})
 }:
 let
-  toml = (builtins.fromTOML (builtins.readFile ../nix.toml));
+  toml = if builtins.pathExists ../nix.toml then
+    (builtins.fromTOML (builtins.readFile ../nix.toml))
+  else
+    "";
 in
 (nix-base.fly.evalSpec) {
   config = { pkgs, ... }: {
     templates.rails.enable = true;
     app.source = ../.;
-    runtimes.ruby.version = toml.requirements.runtime.ruby_version or null;
+    runtimes.ruby.version = toml.requirements.runtime.ruby_version or "3.1.1";
     runtimes.ruby.withJemalloc = toml.requirements.runtime.use_jemalloc or false;
 
     # Define additional paths required for asset compilation
