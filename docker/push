@@ -1,10 +1,14 @@
 #!/usr/bin/env nix-shell
 #!nix-shell -I .nix/default.nix -p flyctl skopeo dive yq jq git -i bash
 
-set -u
-set -e
+set -ue
+
 
 ARCHIVE_PATH=$1
+
+if [ -n "$2" ]; then
+  TAG=$2
+fi
 
 echo "Pushing ${ARCHIVE_PATH} to $TAG..."
 skopeo \
